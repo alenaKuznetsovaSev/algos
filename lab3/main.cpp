@@ -1,68 +1,56 @@
 #include <iostream>
 
-struct numb_in_array {
-  int first_income = -2;
-  int last_income = -2;
-};
-
-std::ostream& operator<<(std::ostream& stream, const numb_in_array& number) {
-  stream << number.first_income + 1 << " " << number.last_income + 1 << "\n";
-  return stream;
-}
-
-numb_in_array bin_search(int array[], int n, int x);
-
 int main() {
-  int n = 0;
-  std::cin >> n;
+  int n = 0, m = 0;
+  std::cin >> n >> m;
 
-  int array[n];
-  for (int i = 0; i < n; i++) {
-    std::cin >> array[i];
+  int64_t up[n + 1];
+  int64_t right[n + 1];
+
+  for (int i = 0; i < n + 1; i++) {
+    up[i] = 0;
+    right[i] = 0;
+  }
+  char command;
+  int64_t step;
+  for (int i = 1; i <= n; i++) {
+    std::cin >> command >> step;
+    right[i] = right[i - 1];
+    up[i] = up[i - 1];
+    switch (command) {
+      case 'R':
+        right[i] += step;
+        break;
+      case 'L':
+        right[i] -= step;
+        break;
+      case 'U':
+        up[i] += step;
+        break;
+      case 'D':
+        up[i] -= step;
+        break;
+      default:
+        break;
+    }
   }
 
-  int m = 0;
-  std::cin >> m;
+  int a = 0;
+  int b = 0;
   for (int i = 0; i < m; i++) {
-    int find_now = 0;
-    std::cin >> find_now;
-    std::cout << bin_search(array, n, find_now);
+    std::cin >> a >> b;
+    if (right[a] - right[b] < 0) {
+      std::cout << right[b] - right[a] << " ";
+    } else {
+      std::cout << right[a] - right[b] << " ";
+    }
+
+    if (up[a] - up[b] < 0) {
+      std::cout << up[b] - up[a] << "\n";
+    } else {
+      std::cout << up[a] - up[b] << "\n";
+    }
   }
 
   return 0;
-}
-
-numb_in_array bin_search(int array[], int n, int x) {
-  int left = -1;
-  int right = n;
-  int mid;
-  numb_in_array res;
-
-  while (right - left > 1) {
-    mid = (right + left) / 2;
-    if (array[mid] < x) {
-      left = mid;
-    } else {
-      right = mid;
-    }
-  }
-  if(array[right] == x){
-    res.first_income = right;
-    left = right;
-    right = n;
-    while (right - left > 1) {
-      mid = (right + left) / 2;
-      if (array[mid] <= x) {
-        left = mid;
-      } else {
-        right = mid;
-      }
-    }
-    res.last_income = left;
-  }else{
-    res.first_income = -1;
-    res.last_income = -1;
-  }
-  
-  return res;
 }
